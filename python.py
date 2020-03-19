@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 
 connection = pymysql.connect(host='127.0.0.1',
                              user='root',
-                             passwd='123321',
+                             passwd='root',
                              db='mydb',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)

@@ -12,18 +12,17 @@ cursor = connection.cursor()
 
 app = Flask(__name__)
 
-
-@app.route("/", method=('GET', 'POST'))
+@app.route("/", methods=('GET', 'POST'))
 def index():
     return render_template('index.html')
 
 
-@app.route("/CreateDB", method='GET')
+@app.route("/CreateDB", methods=['GET'])
 def input_create_db():
     return render_template('input_data.html', text='Придумай название базы данных')
 
 
-@app.route("/CreateDB", method='POST')
+@app.route("/CreateDB", methods=['POST'])
 def create_db():
     name = request.form['name']
 
@@ -38,12 +37,12 @@ def create_db():
     return redirect(url_for('index'))
 
 
-@app.route("/DeleteDB", method='GET')
+@app.route("/DeleteDB", methods=['GET'])
 def input_delete_db():
     return render_template('input_data.html', text='Какую базу удалить?')
 
 
-@app.route("/DeleteDB", method='POST')
+@app.route("/DeleteDB", methods=['POST'])
 def delete_db():
     name = request.form['name']
 
@@ -58,14 +57,14 @@ def delete_db():
     return redirect(url_for('index'))
 
 
-@app.route("/CreateTB", method=('GET'))
+@app.route("/CreateTB", methods=['GET'])
 def input_create_tb():
     return render_template('input_data3.html', text1='Напишите название таблицы',
                            text2='Напишите название колонки',
                            text3='Напишите тип данных(например VARCHAR(20)) ')
 
 
-@app.route("/CreateTB", method=('POST'))
+@app.route("/CreateTB", methods=['POST'])
 def create_tb():
     name = request.form['name']
     name_col = request.form['name_col']
@@ -82,12 +81,12 @@ def create_tb():
     return redirect(url_for('index'))
 
 
-@app.route("/DeleteTB", method=('GET'))
+@app.route("/DeleteTB", methods=['GET'])
 def input_delete_tb():
     return render_template('input_data.html', text='Напишите название таблицы которую хотите удалить')
 
 
-@app.route("/DeleteTB", methods=('POST'))
+@app.route("/DeleteTB", methods=['POST'])
 def delete_tb():
     name = request.form['name']
 
@@ -102,12 +101,12 @@ def delete_tb():
     return redirect(url_for('index'))
 
 
-@app.route("/ChangeTB", methods=('GET'))
+@app.route("/ChangeTB", methods=['GET'])
 def change_tb():
     return render_template('input_change.html')
 
 
-@app.route("/ChangeTB/Edit", method=('GET'))
+@app.route("/ChangeTB/Edit", methods=['GET'])
 def input_edit_tb():
     return render_template('input_data3.html',
                            text1='Напишите название таблицы в которую вы хотите внести изменения ',
@@ -115,7 +114,7 @@ def input_edit_tb():
                            text3='Сделайте запись в колонку ')
 
 
-@app.route("/ChangeTB/Edit", method=('POST'))
+@app.route("/ChangeTB/Edit", methods=['POST'])
 def edit_tb():
     name = request.form['name']
     name_col = request.form['name_col']
@@ -133,7 +132,7 @@ def edit_tb():
     return redirect(url_for("index"))
 
 
-@app.route("/ChangeTB/Add", method=('GET'))
+@app.route("/ChangeTB/Add", methods=['GET'])
 def input_add_col():
     return render_template('input_data3.html',
                            text1='Напишите название таблицы ',
@@ -141,7 +140,7 @@ def input_add_col():
                            text3='Напишите тип данных. Например VARCHAR(20) ')
 
 
-@app.route("/ChangeTB/Add", methods=('POST'))
+@app.route("/ChangeTB/Add", methods=['POST'])
 def add_col():
     name = request.form['name']
     name_col = request.form['name_col']
@@ -157,17 +156,17 @@ def add_col():
     return redirect(url_for('index'))
 
 
-@app.route("/SelectTB", methods=('GET'))
+@app.route("/SelectTB", methods=['GET'])
 def select_tb():
     return render_template('input_select.html')
 
 
-@app.route("/SelectTB/Select_all", methods=('GET'))
+@app.route("/SelectTB/Select_all", methods=['GET'])
 def input_select_all():
     return render_template('input_data.html', text='Напишите название таблицы')
 
 
-@app.route("/SelectTB/Select_all", methods=('POST'))
+@app.route("/SelectTB/Select_all", methods=['POST'])
 def select_all():
     name = request.form['name']
     import_table_query = "SELECT * FROM " + name
@@ -182,12 +181,12 @@ def select_all():
     return render_template('data.html', data=data)
 
 
-@app.route("/SelectTB/count", methods=('GET'))
+@app.route("/SelectTB/count", methods=['GET'])
 def input_count():
     return render_template('input_data.html', text='Напишите название таблицы')
 
 
-@app.route("/SelectTB/count", methods=('GET', 'POST'))
+@app.route("/SelectTB/count", methods=['POST'])
 def count():
     name = request.form['name']
     import_table_query = "SELECT COUNT(*) FROM " + name

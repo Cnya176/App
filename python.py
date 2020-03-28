@@ -7,234 +7,200 @@ connection = pymysql.connect(host='127.0.0.1',
                              db='mydb',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
+
 cursor = connection.cursor()
 
 app = Flask(__name__)
 
 
-@app.route("/", methods=('GET', 'POST'))
+@app.route("/", method=('GET', 'POST'))
 def index():
     return render_template('index.html')
 
 
-@app.route("/CreateDB")
+@app.route("/CreateDB", method='GET')
 def input_create_db():
+    return render_template('input_data.html', text='Придумай название базы данных')
 
-    return render_template('input_data.html', text='Придумайте название базы данных')
 
-
-@app.route("/CreateDB", methods=('GET', 'POST'))
+@app.route("/CreateDB", method='POST')
 def create_db():
-    if request.method == 'POST':
-        name = request.form['name']
+    name = request.form['name']
 
-        create_db_query = "CREATE DATABASE " + name
-        try:
-            cursor.execute(create_db_query)
-            print("База данных была успешно созданна")
-        except Exception as e:
-            print(e)
+    create_db_cuery = "CREATE DATABASE " + name
+    try:
+        cursor.execute(create_db_cuery)
+        print("База данных создана")
+    except Exception as e:
+        print(e)
+    cursor.coommit()
+    connection.close()
+    return redirect(url_for('index'))
 
-            connection.close()
-        return redirect(url_for('index'))
 
-
-@app.route("/DeleteDB")
+@app.route("/DeleteDB", method='GET')
 def input_delete_db():
+    return render_template('input_data.html', text='Какую базу удалить?')
 
-    return render_template('input_data.html', text='Напишите название базы данных, которую хотите удалить')
 
-
-@app.route("/DeleteDB", methods=('GET', 'POST'))
+@app.route("/DeleteDB", method='POST')
 def delete_db():
-    if request.method == 'POST':
-        name = request.form['name']
+    name = request.form['name']
 
-        drop_db_query = "DROP DATABASE " + name
-        try:
-            cursor.execute(drop_db_query)
-            print("База данных была успешно удаленна")
-        except Exception as e:
-            print(e)
+    drop_db_cuery = "DROP DATABASE " + name
+    try:
+        cursor.execute(drop_db_cuery)
+        print("База данных удалена")
+    except Exception as e:
+        print(e)
+    cursor.coommit()
+    connection.close()
+    return redirect(url_for('index'))
 
-            connection.close()
-        return redirect(url_for('index'))
 
-
-@app.route("/CreateTB")
+@app.route("/CreateTB", method=('GET'))
 def input_create_tb():
-
-    return render_template('input_data3.html',
-                           text1='Напишите название таблицы ',
-                           text2='Напишите название нашей новой колонки ',
-                           text3='Напишите тип данных Например VARCHAR (20) ')
+    return render_template('input_data3.html', text1='Напишите название таблицы',
+                           text2='Напишите название колонки',
+                           text3='Напишите тип данных(например VARCHAR(20)) ')
 
 
-@app.route("/CreateTB", methods=('GET', 'POST'))
+@app.route("/CreateTB", method=('POST'))
 def create_tb():
-    if request.method == 'POST':
-        # print("Напишите название таблицы")
-        name = request.form['name']
-        # print("Напишите название нашей новой колонки")
-        name_col = request.form['name_col']
-        # print("Напишите тип данных Например VARCHAR (20)")
-        int_col = request.form['int_col']
+    name = request.form['name']
+    name_col = request.form['name_col']
+    int_col = request.form['int_col']
 
-        create_table_query = "CREATE TABLE " + name + "(" + name_col + " " + int_col + ")"
-        try:
-            cursor.execute(create_table_query)
-            print("Таблица была успешно созданно")
-        except Exception as e:
-            print(e)
-
-            connection.close()
-        return redirect(url_for('index'))
+    create_tb_cuery = "CREATE TABLE " + name
+    try:
+        cursor.execute(create_tb_cuery)
+        print("Таблица создана")
+    except Exception as e:
+        print(e)
+    cursor.coommit()
+    connection.close()
+    return redirect(url_for('index'))
 
 
-@app.route("/DeleteTB")
+@app.route("/DeleteTB", method=('GET'))
 def input_delete_tb():
-
     return render_template('input_data.html', text='Напишите название таблицы которую хотите удалить')
 
 
-@app.route("/DeleteTB", methods=('GET', 'POST'))
+@app.route("/DeleteTB", methods=('POST'))
 def delete_tb():
-    if request.method == 'POST':
-        # print("Напишите название таблицы которую хотите удалить")
-        name = request.form['name']
+    name = request.form['name']
 
-        drop_table_query = "DROP TABLE " + name
-        try:
-            cursor.execute(drop_table_query)
-            print("Таблица была успешно удаленна")
-        except Exception as e:
-            print(e)
-
-            connection.close()
-        return redirect(url_for('index'))
+    drop_table_query = "DROP TABLE " + name
+    try:
+        cursor.execute(drop_table_query)
+        print("Таблица была успешно удаленна")
+    except Exception as e:
+        print(e)
+    cursor.coommit()
+    connection.close()
+    return redirect(url_for('index'))
 
 
-@app.route("/ChangeTB", methods=('GET', 'POST'))
+@app.route("/ChangeTB", methods=('GET'))
 def change_tb():
     return render_template('input_change.html')
 
 
-@app.route("/ChangeTB/Edit")
-def input_edit():
-
+@app.route("/ChangeTB/Edit", method=('GET'))
+def input_edit_tb():
     return render_template('input_data3.html',
                            text1='Напишите название таблицы в которую вы хотите внести изменения ',
                            text2='Напишите название колонки куда вы хотите сделать запись ',
                            text3='Сделайте запись в колонку ')
 
 
-@app.route("/ChangeTB/Edit", methods=('GET', 'POST'))
+@app.route("/ChangeTB/Edit", method=('POST'))
 def edit_tb():
-    if request.method == 'POST':
-        # print("Напишите название таблицы в которую вы хотите внести изменения")
-        name = request.form['name']
-        # print("Напишите название колонки куда вы хотите сделать запись")
-        name_col = request.form['name_col']
-        # print("Сделайте запись в колонку")
-        int_col = request.form['int_col']
-        change_col_query = "INSERT INTO " + name + " (" + name_col + ") VALUES('" + int_col + "');"
-        try:
-            cursor.execute(change_col_query)
-            print("Таблица была успешно изменена")
-            print(change_col_query)
-        except Exception as e:
-            print(e)
+    name = request.form['name']
+    name_col = request.form['name_col']
+    int_col = request.form['int_col']
 
-            connection.close()
-        return redirect(url_for("index"))
+    change_col_query = "INSERT INTO " + name + " (" + name_col + ") VALUES('" + int_col + "');"
+    try:
+        cursor.execute(change_col_query)
+        print("Таблица была успешно изменена")
+        print(change_col_query)
+    except Exception as e:
+        print(e)
+    cursor.coommit()
+    connection.close()
+    return redirect(url_for("index"))
 
 
-@app.route("/ChangeTB/Add")
-def input_add():
-
+@app.route("/ChangeTB/Add", method=('GET'))
+def input_add_col():
     return render_template('input_data3.html',
                            text1='Напишите название таблицы ',
                            text2='Напишите название нашей новой колонки ',
                            text3='Напишите тип данных. Например VARCHAR(20) ')
 
 
-@app.route("/ChangeTB/Add", methods=('GET', 'POST'))
+@app.route("/ChangeTB/Add", methods=('POST'))
 def add_col():
-    if request.method == 'POST':
-        # print("Напишите название таблицы")
-        name = request.form['name']
-        # print("Напишите название нашей новой колонки")
-        name_col = request.form['name_col']
-        # print("Напишите тип данных. Например VARCHAR(20)")
-        int_col = request.form['int_col']
-        add_col_query = "ALTER TABLE " + name + " ADD COLUMN " + name_col + " " + int_col
-        try:
-            cursor.execute(add_col_query)
-            print("Колонка успешно добавлена")
-        except Exception as e:
-            print(e)
-
-            connection.close()
-        return redirect(url_for("index"))
+    name = request.form['name']
+    name_col = request.form['name_col']
+    int_col = request.form['int_col']
+    add_col_query = "ALTER TABLE " + name + " ADD COLUMN " + name_col + " " + int_col
+    try:
+        cursor.execute(add_col_query)
+        print("Колонка успешно добавлена")
+    except Exception as e:
+        print(e)
+    cursor.coommit()
+    connection.close()
+    return redirect(url_for('index'))
 
 
-@app.route("/SelectTB", methods=('GET', 'POST'))
+@app.route("/SelectTB", methods=('GET'))
 def select_tb():
     return render_template('input_select.html')
 
 
-@app.route("/SelectTB/Select_all")
+@app.route("/SelectTB/Select_all", methods=('GET'))
 def input_select_all():
-
     return render_template('input_data.html', text='Напишите название таблицы')
 
 
-@app.route("/SelectTB/Select_all", methods=('GET', 'POST'))
+@app.route("/SelectTB/Select_all", methods=('POST'))
 def select_all():
-    if request.method == 'POST':
-        # print("Напишите название таблицы")
-        name = request.form['name']
-        import_table_query = "SELECT * FROM " + name
+    name = request.form['name']
+    import_table_query = "SELECT * FROM " + name
+    try:
+        cursor.execute(import_table_query)
+    except Exception as e:
+        print(e)
 
-        try:
-            cursor.execute(import_table_query)
-        # print("Данные успешно импортированны")
-        except Exception as e:
-            print(e)
-
-            connection.close()
-
-        data = cursor.fetchall()
-        return render_template('data.html', data=data)
-
-        # for row in cursor.fetchall():
-        #     print(row)
-        # return redirect(url_for("index"))
+    connection.close()
+    cursor.commit()
+    data = cursor.fetchall()
+    return render_template('data.html', data=data)
 
 
-@app.route("/SelectTB/count")
+@app.route("/SelectTB/count", methods=('GET'))
 def input_count():
-
     return render_template('input_data.html', text='Напишите название таблицы')
 
 
 @app.route("/SelectTB/count", methods=('GET', 'POST'))
 def count():
-    if request.method == 'POST':
-        # print("Напишите название таблицы")
-        name = request.form['name']
-        import_table_query = "SELECT COUNT(*) FROM " + name
-        try:
-            cursor.execute(import_table_query)
-            print("Данные успешно импортированны")
-        except Exception as e:
-            print(e)
+    name = request.form['name']
+    import_table_query = "SELECT COUNT(*) FROM " + name
+    try:
+        cursor.execute(import_table_query)
+        print("Данные успешно импортированны")
+    except Exception as e:
+        print(e)
+    cursor.commit()
+    connection.close()
 
-            connection.close()
-
-        data = cursor.fetchall()
-        return render_template('data1.html', data=data)
-        # return redirect(url_for("index"))
+    data = cursor.fetchall()
+    return render_template('data1.html', data=data)
 
 
 if __name__ == "__main__":

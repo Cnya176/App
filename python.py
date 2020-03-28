@@ -29,11 +29,10 @@ def create_db():
     create_db_cuery = "CREATE DATABASE " + name
     try:
         cursor.execute(create_db_cuery)
+        connection.commit()
         print("База данных создана")
     except Exception as e:
         print(e)
-    cursor.coommit()
-    connection.close()
     return redirect(url_for('index'))
 
 
@@ -49,17 +48,18 @@ def delete_db():
     drop_db_cuery = "DROP DATABASE " + name
     try:
         cursor.execute(drop_db_cuery)
+        connection.commit()
         print("База данных удалена")
     except Exception as e:
         print(e)
-    cursor.coommit()
-    connection.close()
+
     return redirect(url_for('index'))
 
 
 @app.route("/CreateTB", methods=['GET'])
 def input_create_tb():
-    return render_template('input_data3.html', text1='Напишите название таблицы',
+    return render_template('input_data3.html',
+                           text1='Напишите название таблицы',
                            text2='Напишите название колонки',
                            text3='Напишите тип данных(например VARCHAR(20)) ')
 
@@ -70,14 +70,14 @@ def create_tb():
     name_col = request.form['name_col']
     int_col = request.form['int_col']
 
-    create_tb_cuery = "CREATE TABLE " + name
+    create_table_query = "CREATE TABLE " + name + "(" + name_col + " " + int_col + ")"
     try:
-        cursor.execute(create_tb_cuery)
+        cursor.execute(create_table_query)
+        connection.commit()
         print("Таблица создана")
     except Exception as e:
         print(e)
-    cursor.coommit()
-    connection.close()
+
     return redirect(url_for('index'))
 
 
@@ -93,11 +93,11 @@ def delete_tb():
     drop_table_query = "DROP TABLE " + name
     try:
         cursor.execute(drop_table_query)
+
         print("Таблица была успешно удаленна")
     except Exception as e:
         print(e)
-    cursor.coommit()
-    connection.close()
+
     return redirect(url_for('index'))
 
 
@@ -123,12 +123,12 @@ def edit_tb():
     change_col_query = "INSERT INTO " + name + " (" + name_col + ") VALUES('" + int_col + "');"
     try:
         cursor.execute(change_col_query)
+
         print("Таблица была успешно изменена")
         print(change_col_query)
     except Exception as e:
         print(e)
-    cursor.coommit()
-    connection.close()
+
     return redirect(url_for("index"))
 
 
@@ -148,11 +148,11 @@ def add_col():
     add_col_query = "ALTER TABLE " + name + " ADD COLUMN " + name_col + " " + int_col
     try:
         cursor.execute(add_col_query)
+        connection.commit()
         print("Колонка успешно добавлена")
     except Exception as e:
         print(e)
-    cursor.coommit()
-    connection.close()
+
     return redirect(url_for('index'))
 
 
@@ -172,11 +172,10 @@ def select_all():
     import_table_query = "SELECT * FROM " + name
     try:
         cursor.execute(import_table_query)
+        connection.commit()
     except Exception as e:
         print(e)
 
-    connection.close()
-    cursor.commit()
     data = cursor.fetchall()
     return render_template('data.html', data=data)
 
@@ -192,11 +191,11 @@ def count():
     import_table_query = "SELECT COUNT(*) FROM " + name
     try:
         cursor.execute(import_table_query)
+        connection.commit()
         print("Данные успешно импортированны")
     except Exception as e:
         print(e)
-    cursor.commit()
-    connection.close()
+
 
     data = cursor.fetchall()
     return render_template('data1.html', data=data)
